@@ -67,6 +67,32 @@ IntelliJ IDEA kullanıyorsanız `pom.xml` dosyasını Maven projesi olarak açı
 | POST | `/api/personeller` | Personel ekle |
 | PUT | `/api/personeller/{id}` | Personel güncelle |
 | DELETE | `/api/personeller/{id}` | Personel sil |
+| GET | `/api/arabalar` | Tüm arabalar |
+| GET | `/api/arabalar/{id}` | Araba getir |
+| POST | `/api/arabalar` | Arabayı personele bağlayarak ekle |
+| PUT | `/api/arabalar/{id}` | Araba bilgilerini ve personelini güncelle |
+| DELETE | `/api/arabalar/{id}` | Araba sil |
+
+### Araba CRUD ve personel ilişkisi
+
+Araba ekleme ve güncelleme isteklerinde `personelId` zorunludur. İlgili personel bulunamazsa API `404 Not Found` döndürür.
+
+```http
+POST http://localhost:8080/api/arabalar
+Content-Type: application/json
+```
+
+```json
+{
+  "plaka": "34ABC123",
+  "marka": "Toyota",
+  "model": "Corolla",
+  "aracCikisYili": "2022-01-01",
+  "personelId": 1
+}
+```
+
+Bir personelin arabaları varken personel silinmeye çalışılırsa ilişkiyi korumak için `409 Conflict` döner. Önce arabalar silinmeli veya başka personele atanmalıdır.
 
 ### 1. Personel ekle – başarılı istek
 

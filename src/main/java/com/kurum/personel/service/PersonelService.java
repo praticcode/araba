@@ -71,10 +71,17 @@ public class PersonelService {
     @Transactional
     public void delete(Long id) {
         Personel personel = findEntity(id);
+        if (!personel.getArabalar().isEmpty()) {
+            throw new BusinessException(
+                    "Arabası bulunan personel silinemez. Önce personelin arabalarını silin.",
+                    HttpStatus.CONFLICT,
+                    "PERSONEL_HAS_CARS"
+            );
+        }
         personelRepository.delete(personel);
     }
 
-    private Personel findEntity(Long id) {
+    private Personel  findEntity(Long id) {
         return personelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Personel bulunamadı. ID: " + id

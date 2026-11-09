@@ -2,6 +2,7 @@ package com.kurum.personel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurum.personel.dto.request.PersonelCreateRequest;
+import com.kurum.personel.repository.ArabaRepository;
 import com.kurum.personel.repository.PersonelRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,12 @@ class GlobalExceptionHandlerIntegrationTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
+    @Autowired ArabaRepository arabaRepository;
     @Autowired PersonelRepository personelRepository;
 
     @BeforeEach
     void setUp() {
+        arabaRepository.deleteAll();
         personelRepository.deleteAll();
     }
 
