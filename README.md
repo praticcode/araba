@@ -63,6 +63,7 @@ IntelliJ IDEA kullanıyorsanız `pom.xml` dosyasını Maven projesi olarak açı
 | Metot | Adres | Açıklama |
 |---|---|---|
 | GET | `/api/personeller` | Tüm personeller |
+| GET | `/api/personeller/detayli` | Personelleri arabalarıyla birlikte listele |
 | GET | `/api/personeller/{id}` | Personel getir |
 | POST | `/api/personeller` | Personel ekle |
 | PUT | `/api/personeller/{id}` | Personel güncelle |
@@ -93,6 +94,8 @@ Content-Type: application/json
 ```
 
 Bir personelin arabaları varken personel silinmeye çalışılırsa ilişkiyi korumak için `409 Conflict` döner. Önce arabalar silinmeli veya başka personele atanmalıdır.
+
+Personel ve arabalarını birlikte listelemek için `GET /api/personeller/detayli` çağrılır. Her personelin `arabalar` alanı, araba yoksa boş liste (`[]`) olarak döner.
 
 ### 1. Personel ekle – başarılı istek
 

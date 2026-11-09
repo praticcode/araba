@@ -3,6 +3,7 @@ package com.kurum.personel.controller;
 import com.kurum.personel.dto.request.PersonelCreateRequest;
 import com.kurum.personel.dto.request.PersonelUpdateRequest;
 import com.kurum.personel.dto.response.PersonelResponse;
+import com.kurum.personel.dto.response.PersonelVeArabalariResponse;
 import com.kurum.personel.service.PersonelService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,11 @@ public class PersonelController {
     @GetMapping
     public ResponseEntity<List<PersonelResponse>> getAll() {
         return ResponseEntity.ok(personelService.getAll());
+    }
+
+    @GetMapping("/detayli")
+    public ResponseEntity<List<PersonelVeArabalariResponse>> getAllWithArabalar() {
+        return ResponseEntity.ok(personelService.getAllWithArabalar());
     }
 
     @GetMapping("/{id}")

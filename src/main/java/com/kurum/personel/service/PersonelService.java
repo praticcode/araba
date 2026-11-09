@@ -3,6 +3,7 @@ package com.kurum.personel.service;
 import com.kurum.personel.dto.request.PersonelCreateRequest;
 import com.kurum.personel.dto.request.PersonelUpdateRequest;
 import com.kurum.personel.dto.response.PersonelResponse;
+import com.kurum.personel.dto.response.PersonelVeArabalariResponse;
 import com.kurum.personel.entity.Personel;
 import com.kurum.personel.exception.BusinessException;
 import com.kurum.personel.exception.ResourceNotFoundException;
@@ -32,6 +33,14 @@ public class PersonelService {
         return personelRepository.findAll()
                 .stream()
                 .map(PersonelResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PersonelVeArabalariResponse> getAllWithArabalar() {
+        return personelRepository.findAllWithArabalarBy()
+                .stream()
+                .map(PersonelVeArabalariResponse::from)
                 .toList();
     }
 

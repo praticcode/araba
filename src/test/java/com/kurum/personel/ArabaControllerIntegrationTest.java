@@ -102,6 +102,27 @@ class ArabaControllerIntegrationTest {
     }
 
     @Test
+    void personelVeArabalariBirlikteListelenebilmeli() throws Exception {
+        Personel personel = personelRepository.save(
+                new Personel("Ayşe", "Demir", "ayse.detay@example.com")
+        );
+        String createRequest = objectMapper.writeValueAsString(new ArabaCreateRequest(
+                "34ABC123", "Toyota", "Corolla", LocalDate.of(2022, 1, 1), personel.getId()
+        ));
+        mockMvc.perform(post("/api/arabalar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createRequest))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/personeller/detayli"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(personel.getId()))
+                .andExpect(jsonPath("$[0].ad").value("Ayşe"))
+                .andExpect(jsonPath("$[0].arabalar[0].plaka").value("34ABC123"))
+                .andExpect(jsonPath("$[0].arabalar[0].marka").value("Toyota"));
+    }
+
+    @Test
     void arabasiOlanPersonelSilinememeli() throws Exception {
         Personel personel = personelRepository.save(
                 new Personel("Mehmet", "Kaya", "mehmet.araba@example.com")
