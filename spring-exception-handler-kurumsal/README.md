@@ -9,11 +9,12 @@ Bu proje, `@RestControllerAdvice` ve `@ExceptionHandler` konusunu gerçek bir ka
 - Spring Web
 - Spring Data JPA
 - Jakarta Bean Validation
-- H2 in-memory veritabanı
+- PostgreSQL (uygulama)
+- H2 in-memory veritabanı (testler)
 - Maven
 - JUnit 5 + MockMvc
 
-> Veritabanı H2 olduğu için ayrıca PostgreSQL/MySQL kurmanız gerekmez. Uygulama kapanınca veriler silinir.
+Uygulama PostgreSQL'e, `araba` şemasına bağlanır. Testler ayrı bir H2 veritabanı kullanır.
 
 ## Proje katmanları
 
@@ -42,13 +43,23 @@ com.kurum.personel
 
 ## Çalıştırma
 
-Gereksinim: JDK 17 ve Maven.
+Gereksinim: JDK 17, Maven ve PostgreSQL.
 
-Proje klasöründe:
+Varsayılan bağlantı `jdbc:postgresql://localhost:5434/mhuys?currentSchema=araba`, kullanıcı `postgres` şeklindedir. Parolayı kaynak koduna eklemeyin; uygulamayı başlatmadan önce ortam değişkeni olarak tanımlayın. PowerShell:
 
-```bash
+```powershell
+$env:DB_PASSWORD = "<PostgreSQL parolanız>"
 mvn spring-boot:run
 ```
+
+Farklı bir bağlantı kullanmak için `DB_URL` ve `DB_USERNAME` ortam değişkenlerini de ayarlayın. Örneğin:
+
+```powershell
+$env:DB_URL = "jdbc:postgresql://localhost:5434/mhuys?currentSchema=araba"
+$env:DB_USERNAME = "postgres"
+```
+
+Uygulama `currentSchema=araba` ile PostgreSQL'deki `araba` şemasını kullanır. Hibernate `update` modu eksik entity tablolarını oluşturur ve mevcut tablolardaki verileri silmez. Mevcut bir tablo yapısı değiştirilecekse şema değişikliğini dağıtımdan önce ayrıca yedekleyip gözden geçirin; kurumsal üretim dağıtımlarında şema değişikliklerini sürümlü migration'larla yönetmeniz önerilir.
 
 Testleri çalıştırmak için:
 

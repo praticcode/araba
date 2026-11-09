@@ -2,21 +2,17 @@ spring:
   application:
     name: spring-exception-handler
   datasource:
-    url: jdbc:h2:mem:personeldb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_URL:jdbc:postgresql://localhost:5434/mhuys?currentSchema=araba}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: update
     properties:
       hibernate:
+        default_schema: araba
         format_sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
 server:
   port: 8080
