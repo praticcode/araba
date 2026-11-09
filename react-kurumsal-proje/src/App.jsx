@@ -1,122 +1,70 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import DashboardPage from './pages/DashboardPage.jsx'
+import PersonellerPage from './pages/PersonellerPage.jsx'
+import ArabalarPage from './pages/ArabalarPage.jsx'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const navigation = [
+  { to: '/', label: 'Genel Bakış', icon: '◫', end: true },
+  { to: '/personeller', label: 'Personeller', icon: '♙' },
+  { to: '/arabalar', label: 'Araçlar', icon: '▰' },
+]
 
+function AppLayout() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark">K</div>
+          <div>
+            <strong>Kurumsal</strong>
+            <span>Yönetim Paneli</span>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        <div className="nav-caption">ÇALIŞMA ALANI</div>
+        <nav className="sidebar-nav" aria-label="Ana menü">
+          {navigation.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            >
+              <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="sidebar-footer">
+          <span className="status-dot" />
+          <span>API bağlantısı</span>
+          <strong>Hazır</strong>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </aside>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <div className="main-column">
+        <header className="topbar">
+          <div className="breadcrumb">Kurumsal <span>/</span> Yönetim</div>
+          <div className="topbar-user">
+            <div className="avatar">YK</div>
+            <div><strong>Yönetici</strong><span>Yönetim hesabı</span></div>
+          </div>
+        </header>
+        <main className="page-content">
+          <Routes>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/personeller" element={<PersonellerPage />} />
+            <Route path="/arabalar" element={<ArabalarPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
   )
 }
 
-export default App
+export default function App() {
+  return <AppLayout />
+}

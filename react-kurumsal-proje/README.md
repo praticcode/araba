@@ -1,16 +1,22 @@
-# React + Vite
+# Kurumsal Yönetim Paneli
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personel ve araç kayıtlarını yöneten React uygulaması. Arayüz React Router ile sayfalara ayrılmıştır ve Spring Boot API'sine bağlanır.
 
-Currently, two official plugins are available:
+## Geliştirme
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Geliştirme sunucusu `/api` isteklerini `http://localhost:8080` adresine yönlendirir. Önce `spring-exception-handler-kurumsal` backend uygulamasını başlatın.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Farklı bir API adresi için `VITE_API_BASE_URL` ortam değişkenini ayarlayın; varsayılan değer `/api`'dir.
 
-## Expanding the ESLint configuration
+## Ekranlar
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `/`: Personel ve araç birleşik tablosu. Personel ID, ad, soyad, e-posta, araç ID, plaka, marka, model ve araç çıkış tarihi alanlarının tamamı filtrelenebilir.
+- `/personeller`: Personel oluşturma, listeleme, güncelleme ve silme.
+- `/arabalar`: Araç oluşturma, listeleme, güncelleme ve silme; araç sorumlusu personel olarak seçilir.
+
+Üretim paketi `npm run build`, kod kontrolleri `npm run lint` ile çalıştırılır.
