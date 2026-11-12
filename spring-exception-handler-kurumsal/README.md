@@ -74,7 +74,9 @@ Loglar konsola ve `logs/spring-exception-handler.log` dosyasına yazılır. Dosy
 10 MB boyut sınırına göre sıkıştırılarak döndürülür; 30 günlük arşiv saklanır. Log klasörünü
 değiştirmek için `LOG_PATH` ortam değişkenini ayarlayın. Servis işlemleri ve merkezi hata
 yakalayıcı, işlem kimliği, HTTP yolu ve hata kodu gibi operasyonel bilgileri loglar; istek
-gövdelerini ve kişisel verileri loglamaz.
+gövdelerini ve kişisel verileri loglamaz. `GarajKaydiService`, `@LogServiceCall` anotasyonu
+üzerinden AOP ile izlenir; başarılı servis çağrılarında metot adı ve işlem süresi kaydedilir.
+Okuma işlemleri `DEBUG`, kayıt değiştiren işlemler `INFO` seviyesinde loglanır.
 
 IntelliJ IDEA kullanıyorsanız `pom.xml` dosyasını Maven projesi olarak açıp `PersonelApplication` sınıfını çalıştırabilirsiniz.
 
