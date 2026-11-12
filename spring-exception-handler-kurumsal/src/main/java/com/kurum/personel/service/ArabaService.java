@@ -10,6 +10,8 @@ import com.kurum.personel.exception.ResourceNotFoundException;
 import com.kurum.personel.repository.ArabaRepository;
 import com.kurum.personel.repository.GarajKaydiRepository;
 import com.kurum.personel.repository.PersonelRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class ArabaService {
+
+    private static final Logger log = LoggerFactory.getLogger(ArabaService.class);
 
     private final ArabaRepository arabaRepository;
     private final PersonelRepository personelRepository;
@@ -39,19 +43,24 @@ public class ArabaService {
                 request.plaka(), request.marka(), request.model(), request.aracCikisYili()
         );
         personel.addAraba(araba);
-        return ArabaResponse.from(arabaRepository.save(araba));
+        Personelarabasi savedAraba = arabaRepository.save(araba);
+        log.info("Araç oluşturuldu. arabaId={}, personelId={}", savedAraba.getId(), personel.getId());
+        return ArabaResponse.from(savedAraba);
     }
 
     @Transactional(readOnly = true)
     public List<ArabaResponse> getAll() {
-        return arabaRepository.findAll()
+        List<ArabaResponse> arabalar = arabaRepository.findAll()
                 .stream()
                 .map(ArabaResponse::from)
                 .toList();
+        log.debug("Araçlar listelendi. aracSayisi={}", arabalar.size());
+        return arabalar;
     }
 
     @Transactional(readOnly = true)
     public ArabaResponse getById(Long id) {
+        log.debug("Araç getiriliyor. arabaId={}", id);
         return ArabaResponse.from(findAraba(id));
     }
 
@@ -67,6 +76,7 @@ public class ArabaService {
             yeniPersonel.addAraba(araba);
         }
 
+        log.info("Araç güncellendi. arabaId={}, personelId={}", araba.getId(), yeniPersonel.getId());
         return ArabaResponse.from(araba);
     }
 
@@ -82,6 +92,7 @@ public class ArabaService {
         }
         araba.getPersonel().removeAraba(araba);
         arabaRepository.delete(araba);
+        log.info("Araç silindi. arabaId={}", id);
     }
 
     private Personelarabasi findAraba(Long id) {

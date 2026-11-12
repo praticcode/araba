@@ -67,6 +67,15 @@ Testleri çalıştırmak için:
 mvn test
 ```
 
+## Loglama
+
+Uygulama SLF4J API'si ve Spring Boot'un varsayılan Logback yapılandırmasıyla log üretir.
+Loglar konsola ve `logs/spring-exception-handler.log` dosyasına yazılır. Dosyalar günlük ve
+10 MB boyut sınırına göre sıkıştırılarak döndürülür; 30 günlük arşiv saklanır. Log klasörünü
+değiştirmek için `LOG_PATH` ortam değişkenini ayarlayın. Servis işlemleri ve merkezi hata
+yakalayıcı, işlem kimliği, HTTP yolu ve hata kodu gibi operasyonel bilgileri loglar; istek
+gövdelerini ve kişisel verileri loglamaz.
+
 IntelliJ IDEA kullanıyorsanız `pom.xml` dosyasını Maven projesi olarak açıp `PersonelApplication` sınıfını çalıştırabilirsiniz.
 
 ## API uçları

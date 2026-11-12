@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
 
+        log.info("Kaynak bulunamadı. method={}, path={}", request.getMethod(), request.getRequestURI());
         return build(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND",
                 ex.getMessage(), request, Map.of());
     }
@@ -34,6 +35,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleBusiness(
             BusinessException ex, HttpServletRequest request) {
 
+        log.warn("İş kuralı ihlali. method={}, path={}, code={}",
+                request.getMethod(), request.getRequestURI(), ex.getCode());
         return build(ex.getStatus(), ex.getCode(), ex.getMessage(), request, Map.of());
     }
 
@@ -46,6 +49,8 @@ public class GlobalExceptionHandler {
             errors.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
+        log.warn("İstek doğrulaması başarısız. method={}, path={}, hataliAlanSayisi={}",
+                request.getMethod(), request.getRequestURI(), errors.size());
         return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR",
                 "Gönderilen alanlarda doğrulama hatası var.", request, errors);
     }
@@ -54,6 +59,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleUnreadableBody(
             HttpMessageNotReadableException ex, HttpServletRequest request) {
 
+        log.warn("İstek gövdesi okunamadı. method={}, path={}", request.getMethod(), request.getRequestURI());
         return build(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_BODY",
                 "İstek gövdesi okunamadı. JSON biçimini ve alan tiplerini kontrol edin.",
                 request, Map.of());
@@ -63,7 +69,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(
             DataIntegrityViolationException ex, HttpServletRequest request) {
 
-        log.warn("Veritabanı bütünlük kısıtı ihlali. path={}", request.getRequestURI());
+        log.warn("Veritabanı bütünlük kısıtı ihlali. method={}, path={}",
+                request.getMethod(), request.getRequestURI());
         return build(HttpStatus.CONFLICT, "DATA_INTEGRITY_VIOLATION",
                 "Kayıt veritabanı kurallarına aykırı. Alanların benzersizliğini kontrol edin.",
                 request, Map.of());
@@ -74,7 +81,8 @@ public class GlobalExceptionHandler {
             Exception ex, HttpServletRequest request) {
 
         // Ayrıntı sunucu loguna yazılır; stack trace veya iç sistem bilgisi istemciye verilmez.
-        log.error("Beklenmeyen uygulama hatası. path={}", request.getRequestURI(), ex);
+        log.error("Beklenmeyen uygulama hatası. method={}, path={}",
+                request.getMethod(), request.getRequestURI(), ex);
 
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR",
                 "Beklenmeyen bir sistem hatası oluştu.", request, Map.of());

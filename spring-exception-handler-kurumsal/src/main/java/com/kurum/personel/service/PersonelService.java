@@ -11,6 +11,8 @@ import com.kurum.personel.exception.BusinessException;
 import com.kurum.personel.exception.ResourceNotFoundException;
 import com.kurum.personel.repository.PersonelRepository;
 import com.kurum.personel.repository.GarajKaydiRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ import java.util.List;
 @Service
 public class PersonelService {
 
+    private static final Logger log = LoggerFactory.getLogger(PersonelService.class);
+
     private final PersonelRepository personelRepository;
     private final GarajKaydiRepository garajKaydiRepository;
 
@@ -33,28 +37,33 @@ public class PersonelService {
 
     @Transactional(readOnly = true)
     public PersonelResponse getById(Long id) {
+        log.debug("Personel getiriliyor. personelId={}", id);
         return PersonelResponse.from(findEntity(id));
     }
 
     @Transactional(readOnly = true)
     public List<PersonelResponse> getAll() {
-        return personelRepository.findAll()
+        List<PersonelResponse> personeller = personelRepository.findAll()
                 .stream()
                 .map(PersonelResponse::from)
                 .toList();
+        log.debug("Personeller listelendi. personelSayisi={}", personeller.size());
+        return personeller;
     }
 
     @Transactional(readOnly = true)
     public List<PersonelVeArabalariResponse> getAllWithArabalar() {
-        return personelRepository.findAllWithArabalarBy()
+        List<PersonelVeArabalariResponse> personeller = personelRepository.findAllWithArabalarBy()
                 .stream()
                 .map(PersonelVeArabalariResponse::from)
                 .toList();
+        log.debug("Personel ve araçları listelendi. personelSayisi={}", personeller.size());
+        return personeller;
     }
 
     @Transactional(readOnly = true)
     public List<PersonelVeArabalariResponse> search(PersonelArabaFilter filter) {
-        return personelRepository.findAll((root, query, criteriaBuilder) -> {
+        List<PersonelVeArabalariResponse> personeller = personelRepository.findAll((root, query, criteriaBuilder) -> {
                     query.distinct(true);
                     var predicates = new java.util.ArrayList<Predicate>();
 
@@ -85,6 +94,8 @@ public class PersonelService {
                 .stream()
                 .map(personel -> PersonelVeArabalariResponse.from(personel, filter))
                 .toList();
+        log.debug("Personel araması tamamlandı. sonucSayisi={}", personeller.size());
+        return personeller;
     }
 
     @Transactional
@@ -101,7 +112,9 @@ public class PersonelService {
                 request.ad(), request.soyad(), request.email()
         );
 
-        return PersonelResponse.from(personelRepository.save(personel));
+        Personel savedPersonel = personelRepository.save(personel);
+        log.info("Personel oluşturuldu. personelId={}", savedPersonel.getId());
+        return PersonelResponse.from(savedPersonel);
     }
 
     @Transactional
@@ -117,6 +130,7 @@ public class PersonelService {
         }
 
         personel.update(request.ad(), request.soyad(), request.email());
+        log.info("Personel güncellendi. personelId={}", personel.getId());
         return PersonelResponse.from(personel);
     }
 
@@ -138,13 +152,12 @@ public class PersonelService {
             );
         }
         personelRepository.delete(personel);
+        log.info("Personel silindi. personelId={}", id);
     }
 
     private Personel  findEntity(Long id) {
         return personelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Personel bulunamadı. ID: " + id
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException("Personel bulunamadı. ID: " + id));
     }
 
     private void addTextFilter(

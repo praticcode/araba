@@ -6,6 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
+    hikari:
+      register-mbeans: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,5 +20,8 @@ server:
   port: 8080
 
 logging:
+  file:
+    path: ${LOG_PATH:logs}
   level:
+    root: INFO
     com.kurum.personel: INFO

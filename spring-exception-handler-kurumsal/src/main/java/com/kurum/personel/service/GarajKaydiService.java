@@ -8,6 +8,8 @@ import com.kurum.personel.exception.BusinessException;
 import com.kurum.personel.exception.ResourceNotFoundException;
 import com.kurum.personel.repository.ArabaRepository;
 import com.kurum.personel.repository.GarajKaydiRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class GarajKaydiService {
+
+    private static final Logger log = LoggerFactory.getLogger(GarajKaydiService.class);
 
     private final GarajKaydiRepository garajKaydiRepository;
     private final ArabaRepository arabaRepository;
@@ -34,26 +38,31 @@ public class GarajKaydiService {
         Personelarabasi araba = findAraba(request.arabaId());
         ensureArabaIsAvailable(araba.getId(), null, request);
 
-        return GarajKaydiResponse.from(garajKaydiRepository.save(new GarajKaydi(
+        GarajKaydi kayit = garajKaydiRepository.save(new GarajKaydi(
                 request.girisTarihi(),
                 request.girisSaati(),
                 request.cikisTarihi(),
                 request.cikisSaati(),
                 araba.getPersonel(),
                 araba
-        )));
+        ));
+        log.info("Garaj kaydı oluşturuldu. kayitId={}, arabaId={}", kayit.getId(), araba.getId());
+        return GarajKaydiResponse.from(kayit);
     }
 
     @Transactional(readOnly = true)
     public List<GarajKaydiResponse> getAll() {
-        return garajKaydiRepository.findAllByOrderByGirisTarihiDescGirisSaatiDesc()
+        List<GarajKaydiResponse> kayitlar = garajKaydiRepository.findAllByOrderByGirisTarihiDescGirisSaatiDesc()
                 .stream()
                 .map(GarajKaydiResponse::from)
                 .toList();
+        log.debug("Garaj kayıtları listelendi. kayitSayisi={}", kayitlar.size());
+        return kayitlar;
     }
 
     @Transactional(readOnly = true)
     public GarajKaydiResponse getById(Long id) {
+        log.debug("Garaj kaydı getiriliyor. kayitId={}", id);
         return GarajKaydiResponse.from(findKayit(id));
     }
 
@@ -72,12 +81,15 @@ public class GarajKaydiService {
                 araba.getPersonel(),
                 araba
         );
+        log.info("Garaj kaydı güncellendi. kayitId={}, arabaId={}", kayit.getId(), araba.getId());
         return GarajKaydiResponse.from(kayit);
     }
 
     @Transactional
     public void delete(Long id) {
-        garajKaydiRepository.delete(findKayit(id));
+        GarajKaydi kayit = findKayit(id);
+        garajKaydiRepository.delete(kayit);
+        log.info("Garaj kaydı silindi. kayitId={}", id);
     }
 
     private void validateTimes(GarajKaydiRequest request) {
