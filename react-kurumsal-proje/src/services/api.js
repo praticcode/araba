@@ -46,3 +46,10 @@ export const arabaApi = {
   update: (id, data) => request(`/arabalar/${id}`, { method: 'PUT', body: jsonBody(data) }),
   remove: (id) => request(`/arabalar/${id}`, { method: 'DELETE' }),
 }
+
+export const garajApi = {
+  list: () => request('/garaj-kayitlari'),
+  create: (data) => request('/garaj-kayitlari', { method: 'POST', body: jsonBody(data) }),
+  update: (id, data) => request(`/garaj-kayitlari/${id}`, { method: 'PUT', body: jsonBody(data) }),
+  remove: (id) => request(`/garaj-kayitlari/${id}`, { method: 'DELETE' }),
+}

@@ -5,6 +5,7 @@ import com.kurum.personel.dto.request.ArabaCreateRequest;
 import com.kurum.personel.dto.request.ArabaUpdateRequest;
 import com.kurum.personel.entity.Personel;
 import com.kurum.personel.repository.ArabaRepository;
+import com.kurum.personel.repository.GarajKaydiRepository;
 import com.kurum.personel.repository.PersonelRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,14 @@ class ArabaControllerIntegrationTest {
     ArabaRepository arabaRepository;
 
     @Autowired
+    GarajKaydiRepository garajKaydiRepository;
+
+    @Autowired
     PersonelRepository personelRepository;
 
     @BeforeEach
     void setUp() {
+        garajKaydiRepository.deleteAll();
         arabaRepository.deleteAll();
         personelRepository.deleteAll();
     }

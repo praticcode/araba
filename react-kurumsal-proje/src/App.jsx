@@ -2,12 +2,14 @@ import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import DashboardPage from './pages/DashboardPage.jsx'
 import PersonellerPage from './pages/PersonellerPage.jsx'
 import ArabalarPage from './pages/ArabalarPage.jsx'
+import GarajPage from './pages/GarajPage.jsx'
 import './App.css'
 
 const navigation = [
   { to: '/', label: 'Genel Bakış', icon: '◫', end: true },
   { to: '/personeller', label: 'Personeller', icon: '♙' },
   { to: '/arabalar', label: 'Araçlar', icon: '▰' },
+  { to: '/garaj', label: 'Garaj', icon: '▤' },
 ]
 
 function AppLayout() {
@@ -57,6 +59,7 @@ function AppLayout() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/personeller" element={<PersonellerPage />} />
             <Route path="/arabalar" element={<ArabalarPage />} />
+            <Route path="/garaj" element={<GarajPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

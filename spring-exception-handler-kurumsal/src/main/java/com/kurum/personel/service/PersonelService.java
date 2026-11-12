@@ -10,6 +10,7 @@ import com.kurum.personel.entity.Personelarabasi;
 import com.kurum.personel.exception.BusinessException;
 import com.kurum.personel.exception.ResourceNotFoundException;
 import com.kurum.personel.repository.PersonelRepository;
+import com.kurum.personel.repository.GarajKaydiRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,11 @@ import java.util.List;
 public class PersonelService {
 
     private final PersonelRepository personelRepository;
+    private final GarajKaydiRepository garajKaydiRepository;
 
-    public PersonelService(PersonelRepository personelRepository) {
+    public PersonelService(PersonelRepository personelRepository, GarajKaydiRepository garajKaydiRepository) {
         this.personelRepository = personelRepository;
+        this.garajKaydiRepository = garajKaydiRepository;
     }
 
     @Transactional(readOnly = true)
@@ -125,6 +128,13 @@ public class PersonelService {
                     "Arabası bulunan personel silinemez. Önce personelin arabalarını silin.",
                     HttpStatus.CONFLICT,
                     "PERSONEL_HAS_CARS"
+            );
+        }
+        if (garajKaydiRepository.existsByPersonel_Id(id)) {
+            throw new BusinessException(
+                    "Garaj geçmişi bulunan personel silinemez.",
+                    HttpStatus.CONFLICT,
+                    "PERSONEL_HAS_GARAGE_RECORDS"
             );
         }
         personelRepository.delete(personel);
